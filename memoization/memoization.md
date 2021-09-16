@@ -5,7 +5,7 @@ At a previous job, my organization used an architecture that relied heavily on m
 
 ## Definition
 
-![simple-memoization](https://github.com/graydavid/aggra-guide/blob/gh-pages/diagrams/memoization/simple-memoization.png)
+![simple-memoization](https://graydavid.github.io/aggra-guide/memoization/simple-memoization.png)
 
 What do I mean by "memoization"? Wikipedia defines it [here](https://en.wikipedia.org/wiki/Memoization). To summarize, take a look at the diagram above. It's a call graph (all arrows are in the direction of the request/call). It shows some unknown caller calling function A. A calls two other functions, B and C, with inputs B' and C', respectively. At that point, B and C call some arbitrary network of function calls. The networks can be completely separate or overlap in some way... it doesn't matter. At some point, each of those networks call function Z separately but with the same input Z'. Memoization is the feature such that function Z only runs once. If in the future, another function calls Z within the same operational context with the same input, Z will return the response it previously calculated (or is currently in the process of calculating). ("Operational context" means the conditions under which the same input-to-output mapping/memory is expected to apply.)
 
@@ -61,7 +61,7 @@ A simple, obvious step would be to focus on each factor and reduce its individua
 
 An extreme approach would be to abandon memoization entirely and call the function beforehand. This diagram illustrates this approach:
 
-![no-memoization](https://github.com/graydavid/aggra-guide/blob/gh-pages/diagrams/memoization/no-memoization.png)
+![no-memoization](https://graydavid.github.io/aggra-guide/memoization/no-memoization.png)
 
 Here, A calls Z and then passes the result along to B and C, which pass it along to their network. Whoever needs the result can use it. Now there's only a single place where Z is called.
 
@@ -74,7 +74,7 @@ Here, A calls Z and then passes the result along to B and C, which pass it along
 
 Another mitigation that addresses multiple problems is to introduce proxies in front of the function call. Here's a diagram explaining how this would work:
 
-![proxy-memoization](https://github.com/graydavid/aggra-guide/blob/gh-pages/diagrams/memoization/proxy-memoization.png)
+![proxy-memoization](https://graydavid.github.io/aggra-guide/memoization/proxy-memoization.png)
 
 Whereas the B and C networks were previously calling Z directly, they're now calling the proxy P. The hope is that even if P is called with different inputs Z' and Z'', P will somehow be able to massage them into a common Z'' input. 
 
@@ -84,7 +84,7 @@ An example where this setup would work is well when there are going to be known 
 
 Another extreme approach, but still using memoization, is to get rid of the input entirely. This diagram illustrates this approach:
 
-![no-input-memoization](https://github.com/graydavid/aggra-guide/blob/gh-pages/diagrams/memoization/no-input-memoization.png)
+![no-input-memoization](https://graydavid.github.io/aggra-guide/memoization/no-input-memoization.png)
 
 Here, A calls a new function P with input Z'. P returns a new function Z\* which, when invoked, will call Z with Z'. The best word I've found to describe Z\* is a "potential", in that it potentially calls Z. Z\* is passed down to B and C and eventually to B's and C's networks. Those networks can now invoke Z\* with no arguments. Z\*, with memoization enabled, will only ever run its logic once.
 
@@ -119,7 +119,7 @@ A common theme in almost all the mitigations I've looked at is that there is a l
 
 A good example of how memoization can go wrong is the architecture at my previous job.
 
-![old-architecture](https://github.com/graydavid/aggra-guide/blob/gh-pages/diagrams/memoization/old-architecture.png)
+![old-architecture](https://graydavid.github.io/aggra-guide/memoization/old-architecture.png)
 
 This architecture was based around something I'll call "modules". For example, my team might own a module that retrieved order information based on an order id. Now, my team owned a large web page, and given the size of that system, we wanted to encourage external teams to take ownership of their own modules. This ownership included the ability to manage deployments of their modules separately from ours. For example, if an external team wanted to add a new widget to a web page, they would create and own their own module. This external team module would read the top-level request, call our order module to retrieve order information, and then use that order information to create their widget. So, there might be some n number of externally-owned modules from m external teams calling our order module in order to collaboratively create the web page that we owned. That order module was expensive, too. We could only make one call to it per top-level request, so each module implicitly had to cooperate to make sure memoization worked.
 

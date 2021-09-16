@@ -4,7 +4,7 @@ This wiki presents an extremely simple version of the typical starting "Hello Wo
 
 Let's take a look at the data dependency diagram for this example first:
 
-![hello-world](https://github.com/graydavid/aggra-guide/blob/gh-pages/hello-world/hello-world.png)
+![hello-world](https://graydavid.github.io/aggra-guide/hello-world/hello-world.png)
 
 There are three nodes.
 1. Node A returns the input provided to the graph.

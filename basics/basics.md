@@ -6,7 +6,7 @@ This wiki walks through the basic building blocks of Aggra: data dependency grap
 
 Agga models programs as data dependency graphs: directed acyclic graphs where each node represents a value-returning function and "points" to other dependency nodes whose data it needs to execute its inherent functionality. To demonstrate, let's start with a simple example:
 
-![simple](https://github.com/graydavid/aggra-guide/blob/gh-pages/basics/simple.png)
+![simple](https://graydavid.github.io/aggra-guide/basics/simple.png)
 
 This graph has three different nodes:
 1. Node A depends on nothing and produces the string "Hello"
@@ -15,7 +15,7 @@ This graph has three different nodes:
 
 Below is a more abstract and complicated graph that will be used in future examples. As before, arrows point from consumer nodes to dependency nodes.
 
-![complex](https://github.com/graydavid/aggra-guide/blob/gh-pages/basics/complex.png)
+![complex](https://graydavid.github.io/aggra-guide/basics/complex.png)
 
 This graph helps highlight the somewhat-arbitrary dependencies nodes can have: nodes can have multiple dependencies and multiple consumers as well. The only forbidden types of dependencies are cyclic, either transiently through nodes or direct/self cycles. (Aggra prevents Nodes from being built with static cyclic relationships, and has multiple protections in place to avoid dynamic cycles during calls. That said, make sure to read javadoc and follow expected usage patterns to avoid those dynamic cycles completely; otherwise, the graph will stall as a node will wait for itself to finish before finishing.)
 
@@ -26,7 +26,7 @@ Concretely, here are the steps that you take in order to create and call nodes i
 4. Call one or more of the root Nodes in the Graph via the GraphCall object you created. Each node call will result in a Reply object.
 5. Once you're done calling all root Nodes, (weakly) close the GraphCall object. This will return a CompletableFuture that will complete when all nodes in the GraphCall have finished. Wait for this Future to complete, read all of your Replys, construct your overall response, and then return it.
 
-The full-fledged [Hello World](https://github.com/graydavid/aggra-guide/blob/gh-pages/hello-world/hello-world.html) code example demonstrates this process in full.
+The full-fledged [Hello World](https://graydavid.github.io/aggra-guide/hello-world/hello-world.html) code example demonstrates this process in full.
 
 ## Call Propagation
 
@@ -34,7 +34,7 @@ Graphs are static: they're supposed to exist for multiple calls/requests to the 
 
 To help cement this idea, let's take a look at the previous graph as one of its nodes (F) is called, that call is propagated, and results are computed.
 
-![complex-sequence](https://github.com/graydavid/aggra-guide/blob/gh-pages/basics/complex-sequence.png)
+![complex-sequence](https://graydavid.github.io/aggra-guide/basics/complex-sequence.png)
 
 Orange nodes are nodes that have never been called, red nodes are nodes that have been called but aren't complete yet, and green nodes are nodes that are complete. Note: the applied coloring is only a visual aid. Nodes themselves do not store state or change. Rather, state/results is/are stored in the memory instance passed between nodes. So, the best way to view this sequence is how a specific memory instance sees the graph.
 
@@ -44,7 +44,7 @@ There are a couple of call-outs here. First, it's assumed that node F will alway
 
 A slightly more complicated example would be if nodes G and/or H were called as well as node F. That example would highlight the memoizing functionality of nodes/memory. In fact, there's nothing preventing that from happening at the end of the sequence above: nodes G and/or H could be called at the same time as node F or at completely different times. As long as the memory instance was the same, the end result would be the same as well. Let's take a look at that extension: node G being called with the same memory instance at the end of the sequence above.
 
-![complex-sequence-2](https://github.com/graydavid/aggra-guide/blob/gh-pages/basics/complex-sequence-2.png)
+![complex-sequence-2](https://graydavid.github.io/aggra-guide/basics/complex-sequence-2.png)
 
 The beginning of this additional sequence looks the same as before with just node G being called. In the next picture, node G has called E. Then, E has called both C and D; however, since node C is already complete, it remains in that state. This highlights how memoization works relative to a given memory instance: node C has been called multiple times but will only ever be run once and produce a single result. Next, we see node D completing; then E; and finally back up to G.
 
@@ -64,11 +64,11 @@ So far, we've only considered graphs that are self-contained: there's no externa
 
 How does a given input node know that its desired input will be present in the memory passed to it? Each Node, in addition to being parameterized by the type of result it returns, is also parameterized by the type of its Memory subclass. That is, Aggra contains an abstract Memory class, which is itself parameterized by input type. When creating a graph, users are required to define a specific Memory subclass to be associated with its nodes. Only memories of that type can be used with the node during execution.
 
-For example, in the [Hello World](https://github.com/graydavid/aggra-guide/blob/gh-pages/hello-world/hello-world.html) example we went through, we created a HelloWorldMemory, which provides inputs of type String. Nodes in the graph declare themselves to be bound to HelloWorldMemory and so only usable with that type of memory. In this way, its input node is guaranteed to receive a memory with a String; plus, other types of nodes elsewhere in the graph, which depend on the input node either directly or indirectly, are guaranteed to be able to provide the input node what it needs. It's as if each node in the graph is able to say to consumers "if you give me a String as input, I can provide you with something of type &lt;ReturnType>"; input nodes will use that String directly, whereas other nodes will pass along that memory (with a String) to it dependencies.
+For example, in the [Hello World](https://graydavid.github.io/aggra-guide/hello-world/hello-world.html) example we went through, we created a HelloWorldMemory, which provides inputs of type String. Nodes in the graph declare themselves to be bound to HelloWorldMemory and so only usable with that type of memory. In this way, its input node is guaranteed to receive a memory with a String; plus, other types of nodes elsewhere in the graph, which depend on the input node either directly or indirectly, are guaranteed to be able to provide the input node what it needs. It's as if each node in the graph is able to say to consumers "if you give me a String as input, I can provide you with something of type &lt;ReturnType>"; input nodes will use that String directly, whereas other nodes will pass along that memory (with a String) to it dependencies.
 
 Why does this feature require the creation of a specific memory subclass for each graph? It doesn't. Theoretically, we could have a single, non-abstract Memory class parameterized by input type. We could then parameterize nodes by input type as well (instead of by memory). However, that model wouldn't be able to provide the kind of guarantees desired for the next feature we're going to talk about.
 
-(Side note: in [other wikis](https://github.com/graydavid/aggra-guide/blob/gh-pages/motivation/memoization.html), we've talked about how important it is to be able to memoize based on 0-argument functions. How are we able to talk about inputs here? The key is that there's only one input in play, and it's associated with the memoization device itself: the memory. So, you could technically say a graph call is memoized relative to a single, overall argument... but this memoization is implicit, and any explicit memoization happens with 0 arguments.)
+(Side note: in [other wikis](https://graydavid.github.io/aggra-guide/memoization/memoization.html), we've talked about how important it is to be able to memoize based on 0-argument functions. How are we able to talk about inputs here? The key is that there's only one input in play, and it's associated with the memoization device itself: the memory. So, you could technically say a graph call is memoized relative to a single, overall argument... but this memoization is implicit, and any explicit memoization happens with 0 arguments.)
 
 ### Hierarchy
 
@@ -82,7 +82,7 @@ Aggra solves both problems by arranging memories in a hierachy.
 
 Aggra supports iteration by allowing nodes to create new memories, call nodes in those memories, and allow nodes in those memories to access their ancestors. Let's take a look at an example:
 
-![iteration](https://github.com/graydavid/aggra-guide/blob/gh-pages/basics/iteration.png)
+![iteration](https://graydavid.github.io/aggra-guide/basics/iteration.png)
 
 In this dependency graph:
 * The color of each graph indicates the memory to which the node belongs. Orange nodes are part of a "parent" memory, while blue nodes are part of a "child" memory.
@@ -92,7 +92,7 @@ In this dependency graph:
 
 This is a simple example of iteration showing how a parent memory needs to create and then use a child memory. What about if the child memory needs to access its parent memory for some data shared by all child memories? Let's take a look at this by extending the above child memory to handle arbitrary factors:
 
-![iteration-ancestor](https://github.com/graydavid/aggra-guide/blob/gh-pages/basics/iteration-ancestor.png)
+![iteration-ancestor](https://graydavid.github.io/aggra-guide/basics/iteration-ancestor.png)
 
 In this dependency graph, we've factored out the "2" into a new node GetFactor associated with the parent memory (Note: GetFactor still returns 2, so the overall result is the same, but it could be changed in one place to an arbitrary factor).
 
@@ -106,7 +106,7 @@ Iteration shows the need for user-created Memory subclasses arranged in a hierar
 
 For example, let's say that someone wants to reuse the MultiplyByFactor nodes.
 
-![reuse](https://github.com/graydavid/aggra-guide/blob/gh-pages/basics/reuse.png)
+![reuse](https://graydavid.github.io/aggra-guide/basics/reuse.png)
 
 Here, we've got two new nodes from a completely different memory: 
 * Input -- a separate input node that gets the input for that new memory 

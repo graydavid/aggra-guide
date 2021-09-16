@@ -6,7 +6,7 @@ This wiki walks through a motivating example for why the Aggra library exists at
 
 Below is a data dependency diagram for the simple example we'll be talking about. Each node represents a function that returns a result. Each arrow represents a dependency needed to execute the function. 
 
-![motivating](https://github.com/graydavid/aggra-guide/blob/gh-pages/motivation/motivating.png)
+![motivating](https://graydavid.github.io/aggra-guide/motivation/motivating.png)
 
 The example represents an implementation of a service operation. GetTopLevelRequest returns the top-level request for the operation. CallService1 calls an external service (named "1" for simplicity); it needs the TopLevelRequest to do that, which it gets from GetTopLevelRequest. And so on, and so forth. The implementations calls four external services in total: 1, 2, A, and B; each of which needs different dependencies to do that. Finally, GetTopLevelResponse depends on two service calls (2 and B) and returns the TopLevelResponse to clients who call the service operation.
 
@@ -51,7 +51,7 @@ public class NoFutures {
 }
 ```
 
-![no-futures](https://github.com/graydavid/aggra-guide/blob/gh-pages/motivation/no-futures.png)
+![no-futures](https://graydavid.github.io/aggra-guide/motivation/no-futures.png)
 
 On the plus side, the code is extremely simple. On the minus side, it's really inefficient. From the sequence diagram, we can see how all of Service1 through GetTopLevelResponse are back-to-back sequential. This is true even though ServiceA could run in parallel with Service1 or how Service2 doesn't need to wait until ServiceA is finished. Whether simplicity or efficiency matters more depends on the use case.
 
@@ -84,7 +84,7 @@ public class PullFuturesPhased {
 }
 ```
 
-![pull-futures-phased](https://github.com/graydavid/aggra-guide/blob/gh-pages/motivation/pull-futures-phased.png)
+![pull-futures-phased](https://graydavid.github.io/aggra-guide/motivation/pull-futures-phased.png)
 
 On the plus side, because ServiceA can now run in parallel with Service1 and because ServiceB can run in parallel with Service2, the overall service operation will run more quickly. In addition, by grouping calls into phases, the implementation remains relatively easy for humans to understand and reason about.
 
@@ -128,7 +128,7 @@ public class PullFuturesExtreme {
 }
 ```
 
-![pull-futures-extreme](https://github.com/graydavid/aggra-guide/blob/gh-pages/motivation/pull-futures-extreme.png)
+![pull-futures-extreme](https://graydavid.github.io/aggra-guide/motivation/pull-futures-extreme.png)
 
 On the plus side, since each call happens as quickly as it can, the service operation now has a minimal latency. On the minus side, there's a proliferation of futures: every call has to be a future, if for no other reason than not to block the main thread in case one of its dependencies isn't finished, yet. In that same light, there's an increase in thread inefficiency: two threads (Service2 and ServiceB) will now wait until Service1 is finished. That may seem small for this specific example, but generally speaking, whenever n calls depend on a single, other call; then n threads will be waiting for the single call to finish. 
 
@@ -286,7 +286,7 @@ public class ConditionalMemoizationWithArgumentsPushFutures {
 
 Here, we pass around a ConcurrentHashMap memory to memoize calls to Service1 (the only service that needs it in this example, but theoretically, it would be applied everywhere). Doing this has allowed us to express the algorithm in terms of direct consumers and dependencies, rather than in a procedural, step-wise, overall-graph fashion. E.g. the top-level run method talks about running only Service2 and ServiceB, its direct dependencies, with no mention of Service1 and ServiceA, which it knows nothing about. The running of Service2 and ServiceB are completely independent of one another (except that they use the same memory to execute Service1).
 
-There are a couple of issue around this approach. First, we have the access of the shared ConcurrentHashMap by multiple threads, which involves coordination and prevents true independence. This property will inherent in any memoization-based approach. Second, the arguments necessary for the lowest layers of the graph need to be ferried along through. The above example doesn't highlight this very well since, for example, Service1 uses the same request object as all the other services. Imagine, though, if Service1 needed something completely separate, something that Service2 and ServiceB (its consumers) didn't need at all. The running of Service2 and ServiceB would still need this extra something, in order to pass it along to the call to Service1. Third, we're using arguments to perform the memomization. As mentioned in [the memoization wiki](https://github.com/graydavid/aggra-guide/blob/gh-pages/memoization/memoization.html), this can lead to problems if multiple callers accidentally construct different arguments, leading to separate calls for what should be the same call.
+There are a couple of issue around this approach. First, we have the access of the shared ConcurrentHashMap by multiple threads, which involves coordination and prevents true independence. This property will inherent in any memoization-based approach. Second, the arguments necessary for the lowest layers of the graph need to be ferried along through. The above example doesn't highlight this very well since, for example, Service1 uses the same request object as all the other services. Imagine, though, if Service1 needed something completely separate, something that Service2 and ServiceB (its consumers) didn't need at all. The running of Service2 and ServiceB would still need this extra something, in order to pass it along to the call to Service1. Third, we're using arguments to perform the memomization. As mentioned in [the memoization wiki](https://graydavid.github.io/aggra-guide/memoization/memoization.html), this can lead to problems if multiple callers accidentally construct different arguments, leading to separate calls for what should be the same call.
 
 ## Memoization Without Arguments
 

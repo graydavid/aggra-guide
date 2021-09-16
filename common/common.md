@@ -8,7 +8,7 @@ Input nodes are special nodes that retrieve the input associated with the memory
 
 Here's an example:
 
-![input](https://github.com/graydavid/aggra-guide/blob/gh-pages/common/input.png)
+![input](https://graydavid.github.io/aggra-guide/common/input.png)
 
 ```java
 public class Input {
@@ -33,7 +33,7 @@ FunctionNodes execute a provided function against a list of dependency nodes. Th
 
 Here's an example:
 
-![function](https://github.com/graydavid/aggra-guide/blob/gh-pages/common/function.png)
+![function](https://graydavid.github.io/aggra-guide/common/function.png)
 
 ```java
 public class Function {
@@ -98,7 +98,7 @@ ConditionNodes evaluate conditions and then decide whether or not to call one of
 
 Here's an example:
 
-![condition](https://github.com/graydavid/aggra-guide/blob/gh-pages/common/condition.png)
+![condition](https://graydavid.github.io/aggra-guide/common/condition.png)
 
 ```java
 public class Condition {
@@ -137,7 +137,7 @@ IterationNodes iteratively call a dependency node. This is possible, because the
 
 Here's an example:
 
-![iteration](https://github.com/graydavid/aggra-guide/blob/gh-pages/common/iteration.png)
+![iteration](https://graydavid.github.io/aggra-guide/common/iteration.png)
 
 ```java
 public class Iteration {
@@ -189,7 +189,7 @@ MemoryTripNodes allow users to create new memories and call dependency nodes the
 
 Here's an example:
 
-![memory-trip](https://github.com/graydavid/aggra-guide/blob/gh-pages/common/memory-trip.png)
+![memory-trip](https://graydavid.github.io/aggra-guide/common/memory-trip.png)
 
 ```java
 public class MemoryTrip {
@@ -248,7 +248,7 @@ CaptureResponseNodes capture responses from other nodes whether those nodes succ
 
 Here's an example:
 
-![capture-response](https://github.com/graydavid/aggra-guide/blob/gh-pages/common/capture-response.png)
+![capture-response](https://graydavid.github.io/aggra-guide/common/capture-response.png)
 
 ```java
 public class CaptureResponse {
@@ -278,11 +278,11 @@ ReturnOrThrow checks a random boolean; if true, if returns "Result"; otherwise, 
 
 ## TimeLimit
 
-TimeLimitNodes mirror a dependency node, setting time limits on how long the dependency takes to return its response and/or how long it takes the dependency to complete its response. This concept is useful to protect against unreliable/rogue nodes that may take too long doing either. Beware that, if a timeout is specified, the created time-limit node will have a DependencyLifetime of GRAPH, which as stated in [the advanced wiki](https://github.com/graydavid/aggra-guide/blob/gh-pages/advanced/advanced.html), takes more resources for Aggra to track. There's also another section in that advanced wiki on handling unreliable nodes that you should look over, too, before deciding whether TimeLimitNodes is your best option given the tradeoffs.
+TimeLimitNodes mirror a dependency node, setting time limits on how long the dependency takes to return its response and/or how long it takes the dependency to complete its response. This concept is useful to protect against unreliable/rogue nodes that may take too long doing either. Beware that, if a timeout is specified, the created time-limit node will have a DependencyLifetime of GRAPH, which as stated in [the advanced wiki](https://graydavid.github.io/aggra-guide/advanced/advanced.html), takes more resources for Aggra to track. There's also another section in that advanced wiki on handling unreliable nodes that you should look over, too, before deciding whether TimeLimitNodes is your best option given the tradeoffs.
 
 Here's an example:
 
-![capture-response](https://github.com/graydavid/aggra-guide/blob/gh-pages/common/time-limit.png)
+![capture-response](https://graydavid.github.io/aggra-guide/common/time-limit.png)
 
 ```java
 public class TimeLimit {
@@ -319,7 +319,7 @@ TryWithResourceNodes are the Aggra equivalent of java's try-with-resource patter
 
 Here's an example:
 
-![try-with-resource](https://github.com/graydavid/aggra-guide/blob/gh-pages/common/try-with-resource.png)
+![try-with-resource](https://graydavid.github.io/aggra-guide/common/try-with-resource.png)
 
 ```java
 public class TryWithResource {

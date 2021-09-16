@@ -39,11 +39,11 @@ You can find the code repository for Aggra [here](https://github.com/graydavid/a
 
 The user's guide is broken down into the following sub-wikis:
 
-* [Memoization](https://github.com/graydavid/aggra-guide/blob/gh-pages/motivation/memoization.html) (Optional) -- this optional wiki describes some properties of memoization which are important for justifying Aggra's existence.
-* [Motivation](https://github.com/graydavid/aggra-guide/blob/gh-pages/motivation/motivation.html) (Optional) -- this optional wiki takes a step-by-step approach to providing the motivation for Aggra's existence.
-* [Hello World](https://github.com/graydavid/aggra-guide/blob/gh-pages/hello-world/hello-world.html) -- walks through an extremely simple version of the typical starting "Hello World" program.
-* [Basics](https://github.com/graydavid/aggra-guide/blob/gh-pages/basics/basics.html) -- walks through the basic building blocks of Aggra. This should get you ready to create basic programs with basic features.
-* [Common Node Types](https://github.com/graydavid/aggra-guide/blob/gh-pages/common/common.html) -- walks through each of the predefined node builders/factories that help streamline the creation of common node types.
-* [Advanced](https://github.com/graydavid/aggra-guide/blob/gh-pages/advanced/advanced.html) -- walks through the more-advanced features of Aggra. These are features that you don't need to know when you just start using Aggra but may need to learn as you get more experience.
-* [FAQ](https://github.com/graydavid/aggra-guide/blob/gh-pages/faq/faq.html) -- answers what I expect might be some frequently-asked questions about Aggra and more subtle points about Aggra's design.
+* [Memoization](https://graydavid.github.io/aggra-guide/memoization/memoization.html) (Optional) -- this optional wiki describes some properties of memoization which are important for justifying Aggra's existence.
+* [Motivation](https://graydavid.github.io/aggra-guide/motivation/motivation.html) (Optional) -- this optional wiki takes a step-by-step approach to providing the motivation for Aggra's existence.
+* [Hello World](https://graydavid.github.io/aggra-guide/hello-world/hello-world.html) -- walks through an extremely simple version of the typical starting "Hello World" program.
+* [Basics](https://graydavid.github.io/aggra-guide/basics/basics.html) -- walks through the basic building blocks of Aggra. This should get you ready to create basic programs with basic features.
+* [Common Node Types](https://graydavid.github.io/aggra-guide/common/common.html) -- walks through each of the predefined node builders/factories that help streamline the creation of common node types.
+* [Advanced](https://graydavid.github.io/aggra-guide/advanced/advanced.html) -- walks through the more-advanced features of Aggra. These are features that you don't need to know when you just start using Aggra but may need to learn as you get more experience.
+* [FAQ](https://graydavid.github.io/aggra-guide/faq/faq.html) -- answers what I expect might be some frequently-asked questions about Aggra and more subtle points about Aggra's design.
 * [Code Examples](https://github.com/graydavid/aggra-examples) -- a project containing the code examples from this wiki as well as additional tests.
