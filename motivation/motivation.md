@@ -6,7 +6,7 @@ This wiki walks through a motivating example for why the Aggra library exists at
 
 Below is a data dependency diagram for the simple example we'll be talking about. Each node represents a function that returns a result. Each arrow represents a dependency needed to execute the function. 
 
-![motivating](https://graydavid.github.io/aggra-guide/motivation/motivating.png)
+![motivating](https://graydavid.github.io/aggra-guide/motivation/motivation.png)
 
 The example represents an implementation of a service operation. GetTopLevelRequest returns the top-level request for the operation. CallService1 calls an external service (named "1" for simplicity); it needs the TopLevelRequest to do that, which it gets from GetTopLevelRequest. And so on, and so forth. The implementations calls four external services in total: 1, 2, A, and B; each of which needs different dependencies to do that. Finally, GetTopLevelResponse depends on two service calls (2 and B) and returns the TopLevelResponse to clients who call the service operation.
 
